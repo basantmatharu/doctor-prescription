@@ -14,6 +14,16 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.scholars.doctor.R;
+import com.scholars.doctor.model.Prescription;
+import com.scholars.doctor.model.managers.PrescriptionManager;
+import com.scholars.doctor.model.managers.UserManager;
+import com.scholars.doctor.service.FcmManagerService;
+import com.scholars.doctor.ui.pharma.PrescriptionDetailActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 /**
  * Helper class for showing and canceling prescription update
@@ -44,19 +54,15 @@ public class PrescriptionUpdateNotification {
      * @see #cancel(Context)
      */
     public static void notify(final Context context,
-                              final String exampleString, final int number) {
+                              final Map data) {
         final Resources res = context.getResources();
 
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.example_picture);
 
-
-        final String ticker = exampleString;
-        final String title = res.getString(
-                R.string.prescription_update_notification_title_template, exampleString);
-        final String text = res.getString(
-                R.string.prescription_update_notification_placeholder_text_template, exampleString);
+        final String ticker = (String) data.get("title");
+        final String title = (String) data.get("title");
+        final String text = (String) data.get("message");
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 
@@ -74,18 +80,13 @@ public class PrescriptionUpdateNotification {
 
                 // Use a default priority (recognized on devices running Android
                 // 4.1 or later)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
 
                 // Provide a large icon, shown with the notification in the
                 // notification drawer on devices running Android 3.0 or later.
-                .setLargeIcon(picture)
 
                 // Set ticker text (preview) information for this notification.
                 .setTicker(ticker)
-
-                // Show a number. This is useful when stacking notifications of
-                // a single type.
-                .setNumber(number)
 
                 // If this notification relates to a past or upcoming event, you
                 // should set the relevant time information using the setWhen
@@ -96,24 +97,39 @@ public class PrescriptionUpdateNotification {
                 // the notification timestamp in milliseconds.
                 //.setWhen(...)
 
-                // Set the pending intent to be initiated when the user touches
-                // the notification.
-                .setContentIntent(
-                        PendingIntent.getActivity(
-                                context,
-                                0,
-                                new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com")),
-                                PendingIntent.FLAG_UPDATE_CURRENT))
-
                 // Show expanded text content on devices running Android 4.1 or
                 // later.
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(text)
                         .setBigContentTitle(title)
-                        .setSummaryText("Dummy summary text"))
+                        .setSummaryText((CharSequence) data.get("message")))
 
                 // Automatically dismiss the notification when it is touched.
                 .setAutoCancel(true);
+
+        PrescriptionManager.getPrescriptionDetails((String) data.get("prescriptionId"), new PrescriptionManager.CallBacks() {
+            @Override
+            public void onGetChild(Object p) {
+                Prescription prescription = (Prescription) p;
+                Intent intent = new Intent(context, PrescriptionDetailActivity.class);
+                intent.putExtra("prescription", prescription);
+                intent.putExtra("editable", ((String)data.get("for")).equals(context.getString(R.string.role_pharmacy)));
+                // Set the pending intent to be initiated when the user touches
+                        // the notification.
+                builder.setContentIntent(
+                        PendingIntent.getActivity(
+                                context,
+                                0,
+                                intent,
+                                PendingIntent.FLAG_ONE_SHOT));
+                PrescriptionUpdateNotification.notify(context, builder.build());
+            }
+
+            @Override
+            public void onChildChanged(Object p) {
+
+            }
+        });
 
         notify(context, builder.build());
     }
@@ -129,10 +145,7 @@ public class PrescriptionUpdateNotification {
         }
     }
 
-    /**
-     * Cancels any notifications of this type previously shown using
-     * {@link #notify(Context, String, int)}.
-     */
+
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public static void cancel(final Context context) {
         final NotificationManager nm = (NotificationManager) context

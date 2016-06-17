@@ -13,9 +13,9 @@ import android.widget.Button;
 
 import com.scholars.doctor.R;
 import com.scholars.doctor.model.Prescription;
-import com.scholars.doctor.model.PrescriptionManager;
+import com.scholars.doctor.model.managers.PrescriptionManager;
 import com.scholars.doctor.model.User;
-import com.scholars.doctor.model.UserManager;
+import com.scholars.doctor.model.managers.UserManager;
 import com.scholars.doctor.service.FcmManagerService;
 import com.scholars.doctor.ui.BaseActivity;
 
@@ -104,30 +104,19 @@ public class DoctorHomeActivity extends BaseActivity implements View.OnClickList
 
         PrescriptionManager.createPrescription(p, new PrescriptionManager.CallBacks() {
             @Override
-            public void onSuccess(Object p) {
+            public void onGetChild(Object p) {
                 hideProgressDialog();
-                FcmManagerService.sendNewPrescriptionNotification(DoctorHomeActivity.this, DoctorHomeActivity.this.currentPatient);
+                FcmManagerService.sendNewPrescriptionNotification(DoctorHomeActivity.this, DoctorHomeActivity.this.currentPatient, (Prescription) p);
                 clearFields();
                 Snackbar.make(rootView, getString(R.string.presc_submitted), Snackbar.LENGTH_SHORT).show();
             }
-        });
-        /*Handler handler = new Handler(new Handler.Callback() {
+
             @Override
-            public boolean handleMessage(Message msg) {
-                hideProgressDialog();
-                clearFields();
-                return true;
+            public void onChildChanged(Object p) {
+
             }
         });
-        handler.sendEmptyMessageDelayed(32, 1000);*/
 
-
-        UserManager.getUser(usernameText.getText().toString(), new UserManager.UserCallBacks() {
-            @Override
-            public void onSuccess(User user) {
-                FcmManagerService.sendNewPrescriptionNotification(DoctorHomeActivity.this, user);
-            }
-        });
     }
 
     private void clearFields() {

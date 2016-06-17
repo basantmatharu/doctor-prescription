@@ -1,19 +1,18 @@
 package com.scholars.doctor.ui.patient;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.scholars.doctor.R;
 import com.scholars.doctor.model.Prescription;
-import com.scholars.doctor.model.PrescriptionManager;
+import com.scholars.doctor.model.managers.PrescriptionManager;
+import com.scholars.doctor.ui.PrescriptionAdapter;
 
 public class PatientHomeActivity extends AppCompatActivity {
 
@@ -39,11 +38,17 @@ public class PatientHomeActivity extends AppCompatActivity {
         final String username = prefs.getString("username", "");
         PrescriptionManager.listPrescriptions(new PrescriptionManager.CallBacks() {
             @Override
-            public void onSuccess(Object o) {
+            public void onGetChild(Object o) {
                 Prescription p = (Prescription) o;
                 if (username.equals(p.getPatientId())) {
                     adapter.addItem(p);
                 }
+            }
+
+            @Override
+            public void onChildChanged(Object p) {
+                Prescription prescription = (Prescription) p;
+                adapter.updateItem(prescription);
             }
         });
         // ATTENTION: This was auto-generated to implement the App Indexing API.

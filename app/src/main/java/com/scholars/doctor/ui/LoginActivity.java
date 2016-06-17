@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.scholars.doctor.R;
 import com.scholars.doctor.model.User;
-import com.scholars.doctor.model.UserManager;
+import com.scholars.doctor.model.managers.UserManager;
 import com.scholars.doctor.ui.doctor.DoctorHomeActivity;
 import com.scholars.doctor.ui.patient.PatientHomeActivity;
 import com.scholars.doctor.ui.pharma.PharmaHomeActivity;
@@ -31,11 +31,15 @@ public class LoginActivity extends BaseActivity {
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mLoginFormView;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
@@ -67,7 +71,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void checkLogin() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String username = prefs.getString("username", null);
         String role = prefs.getString("role", null);
         if (username != null && role != null) {
@@ -78,8 +81,15 @@ public class LoginActivity extends BaseActivity {
                 case "PATIENT":
                     startPatientActivity();
                     break;
+                case "PHARMA":
+                    startPharmaActivity();
             }
+            updateRegId(username);
         }
+    }
+
+    private void updateRegId(String username) {
+        UserManager.modifyUserColumn(username, "registrationId", prefs.getString("regId", ""));
     }
 
 
@@ -117,7 +127,6 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void saveUser(User user) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         UserManager.modifyUserColumn(user.getUsername(), "registrationId", prefs.getString("regId", ""));
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("username", user.getUsername());

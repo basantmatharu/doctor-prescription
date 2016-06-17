@@ -10,7 +10,7 @@ import android.view.View;
 import com.scholars.doctor.ui.BaseActivity;
 import com.scholars.doctor.R;
 import com.scholars.doctor.model.User;
-import com.scholars.doctor.model.UserManager;
+import com.scholars.doctor.model.managers.UserManager;
 
 
 public class SelectPatientActivity extends BaseActivity implements View.OnClickListener {

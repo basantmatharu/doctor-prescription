@@ -1,4 +1,4 @@
-package com.scholars.doctor.ui.patient;
+package com.scholars.doctor.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +46,26 @@ public class PrescriptionAdapter extends RecyclerView.Adapter<PrescriptionAdapte
     public void setItems(List<Prescription> items) {
         this.mItems = items;
         notifyDataSetChanged();
+    }
+
+    public void setItem(int position, Prescription prescription) {
+        if (mItems != null) {
+            mItems.set(position, prescription);
+            notifyItemChanged(position);
+        }
+    }
+
+    public void updateItem(Prescription prescription) {
+        if (mItems != null) {
+            int i = 0;
+            for (; i < mItems.size(); i++) {
+                if (mItems.get(i).getId().equals(prescription.getId())) {
+                    mItems.set(i, prescription);
+                    break;
+                }
+            }
+            notifyItemChanged(i);
+        }
     }
 
     @Override

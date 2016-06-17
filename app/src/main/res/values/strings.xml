@@ -26,29 +26,23 @@
     <string name="create_prescription">Create new Prescription</string>
     <string name="login">Login</string>
     <string name="submit">Submit Prescription</string>
-    <string name="submitting_prescription">Submitting prescription...</string>
+    <string name="submitting_prescription">Submitting prescription…</string>
 
     <string name="role_doctor">DOCTOR</string>
     <string name="role_patient">PATIENT</string>
     <string name="role_pharmacy">PHARMA</string>
-    <string name="logging_in">Logging in...</string>
+    <string name="logging_in">Logging in…</string>
     <string name="incorrect_password">Incorrect password.</string>
-    <string name="fetching_user">Fetching user...</string>
+    <string name="fetching_user">Fetching user…</string>
 
     <string name="prescription_update_notification_title_template">Prescription update: %1$s
     </string>
 
-    <!-- TODO: remove this placeholder text -->
-    <string name="prescription_update_notification_placeholder_text_template">You said %1$s and
-        lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non enim magna. Morbi dictum,
-        velit vel semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed
-        turpis. Pellentesque vitae metus elit, nec tincidunt tellus. Integer sed nisl sem,
-        ullamcorper ornare lacus. Duis ac mauris sed massa congue volutpat. Donec sed erat sit amet
-        turpis viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat
-        nec nec tortor.
-    </string>
+
     <string name="presc_submitted">Prescription submitted</string>
     <string name="unkown_role">Unknown role</string>
     <string name="retrieving_presc">Retreiving your prescriptions</string>
+    <string name="updating_prescription">Updating prescription…</string>
+    <string name="no_prescriptions_available">No Prescriptions Available</string>
 
 </resources>

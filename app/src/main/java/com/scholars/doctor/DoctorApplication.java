@@ -1,4 +1,4 @@
-package com.scholars.doctor.ui.doctor;
+package com.scholars.doctor;
 
 import android.app.Application;
 

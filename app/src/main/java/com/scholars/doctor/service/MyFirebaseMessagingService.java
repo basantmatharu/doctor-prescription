@@ -13,6 +13,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.scholars.doctor.notification.PrescriptionUpdateNotification;
 
+import java.util.Map;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public MyFirebaseMessagingService() {
     }
@@ -21,10 +23,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        FirebaseMessaging messagin = FirebaseMessaging.getInstance();
-//        Log.d("hello", remoteMessage.getData().get("ola"));
+        Map data = remoteMessage.getData();
 
-        PrescriptionUpdateNotification.notify(getApplicationContext(), "asdasd", 33);
+        PrescriptionUpdateNotification.notify(getApplicationContext(), data);
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override

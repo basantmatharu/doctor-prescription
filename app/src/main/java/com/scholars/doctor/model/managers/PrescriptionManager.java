@@ -1,7 +1,11 @@
-package com.scholars.doctor.model;
+package com.scholars.doctor.model.managers;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -9,9 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.scholars.doctor.model.Prescription;
 
 import java.util.HashMap;
 
@@ -24,16 +26,16 @@ public class PrescriptionManager {
     private static DatabaseReference myRef = FirebaseDatabase.getInstance().getReference() ;
 
     public interface CallBacks{
-        public void onSuccess(Object p);
+        void onGetChild(Object p);
 
-
+        void onChildChanged(Object p);
     }
 
     public static void createPrescription(Prescription p, CallBacks cb ){
         String k = myRef.child("prescription").push().getKey();
         Log.d(k,k);
         myRef.child("prescription").child(k).setValue(p);
-        cb.onSuccess(p);
+        cb.onGetChild(p);
     }
 
 
@@ -60,14 +62,16 @@ public class PrescriptionManager {
                 vals.put("totalAmount",p.getTotalAmount());*/
 
 
-                cb.onSuccess(p);
+                cb.onGetChild(p);
 
                 // Log.d("asda",newPresc.getPatientId());
 
             }
             @Override
             public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-
+                String prescKey = snapshot.getKey();
+                Prescription p = snapshot.getValue(Prescription.class);
+                cb.onChildChanged(p);
             }
             @Override
             public void onChildRemoved(DataSnapshot snapshot) {
@@ -93,7 +97,7 @@ public class PrescriptionManager {
             public void onDataChange(DataSnapshot snapshot) {
 
                 Prescription v = snapshot.getValue(Prescription.class);
-                callback.onSuccess(v);
+                callback.onGetChild(v);
             }
             @Override
             public void onCancelled(DatabaseError firebaseError) {
@@ -101,9 +105,18 @@ public class PrescriptionManager {
         });
     }
 
-    public static void modifyPrescription(String prescriptionId,Prescription prescription, final CallBacks callback){
-        myRef.child("prescription").child(prescriptionId).setValue(prescription);
-        callback.onSuccess(prescription);
+    public static void modifyPrescription(String prescriptionId, final Prescription prescription, final CallBacks callback){
+        myRef.child("prescription").child(prescriptionId).setValue(prescription)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    if (callback != null) {
+                        callback.onGetChild(prescription);
+                    }
+                }
+            });
+
+//        callback.onGetChild(prescription);
     }
 
 
