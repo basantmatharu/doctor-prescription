@@ -35,6 +35,7 @@ public class PrescriptionManager {
         String k = myRef.child("prescription").push().getKey();
         Log.d(k,k);
         myRef.child("prescription").child(k).setValue(p);
+        p.setId(k);
         cb.onGetChild(p);
     }
 

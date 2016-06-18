@@ -120,5 +120,10 @@ public class FcmManagerService {
 
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
     }
 }

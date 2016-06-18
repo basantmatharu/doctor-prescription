@@ -86,6 +86,7 @@ public class PharmaHomeActivity extends BaseActivity {
     private void startDetailActivity(Prescription presc) {
         Intent intent = new Intent(this, PrescriptionDetailActivity.class);
         intent.putExtra("prescription", presc);
+        intent.putExtra("editable", true);
         startActivityForResult(intent, REQUEST_CODE_DETAIL);
     }
 

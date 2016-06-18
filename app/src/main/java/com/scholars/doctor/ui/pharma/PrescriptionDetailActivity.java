@@ -27,6 +27,7 @@ public class PrescriptionDetailActivity extends BaseActivity {
     Spinner statusSpinner;
     FloatingActionButton updateButton;
     Prescription currentPrescription;
+    boolean editable;
 
     public static final int RESULT_CODE_UPDATED = 55;
 
@@ -48,9 +49,12 @@ public class PrescriptionDetailActivity extends BaseActivity {
 
 
         currentPrescription = (Prescription) getIntent().getSerializableExtra("prescription");
+        editable = getIntent().getBooleanExtra("editable", false);
         if (currentPrescription != null) {
             amountText.setText(currentPrescription.getTotalAmount());
+            amountText.setEnabled(editable);
             prescriptionText.setText(currentPrescription.getMedicines());
+            prescriptionText.setEnabled(editable);
             titleText.setText(currentPrescription.getTitle());
             int position = 0;
             switch (currentPrescription.getStatus()) {
@@ -65,6 +69,8 @@ public class PrescriptionDetailActivity extends BaseActivity {
                     break;
             }
             statusSpinner.setSelection(position);
+            statusSpinner.setEnabled(editable);
+            updateButton.setVisibility(editable ? View.VISIBLE : View.GONE);
         }
 
         updateButton.setOnClickListener(new View.OnClickListener() {
