@@ -1,2 +1,2 @@
 # doctor-prescription
-AssignmentProject
+Android Assignment Project.
